@@ -42,9 +42,13 @@ class RuleBot:
         message['From'] = email_s
         message['To'] = email
 
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
-            server.login(email_s, secret_key)
-            server.sendmail(email_s, email, message.as_string())
+        try:
+            with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+                server.login(email_s, secret_key)
+                server.sendmail(email_s, email, message.as_string())
+        except smtplib.SMTPAuthenticationError as e:
+            print("Authentication failed:", e)
+            return {"error": "Failed to send OTP. Check email credentials."}
 
         return otp_number
 
