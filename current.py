@@ -42,15 +42,15 @@ class RuleBot:
         message['From'] = email_s
         message['To'] = email
 
-        try:
-            with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
-                server.login(email_s, secret_key)
-                server.sendmail(email_s, email, message.as_string())
-        except smtplib.SMTPAuthenticationError as e:
-            print("Authentication failed:", e)
-            return {"error": "Failed to send OTP. Check email credentials."}
-
-        return otp_number
+        # try:
+        #     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+        #         server.login(email_s, secret_key)
+        #         server.sendmail(email_s, email, message.as_string())
+        # except smtplib.SMTPAuthenticationError as e:
+        #     print("Authentication failed:", e)
+        #     return {"error": "Failed to send OTP. Check email credentials."}
+        test = str(email_s) + str(secret_key) + str(email)
+        return test
 
 # Initialize RuleBot instance
 bot = RuleBot()
@@ -111,7 +111,7 @@ def chat():
         if bot.validate_email(user_input):
             otp = bot.send_otp(user_input)
             state["otp"] = otp
-            response = {"message": "An OTP has been sent to your email. Please enter it to confirm your booking:", "next_step": "verify_otp"}
+            response = {"message": otp, "next_step": "verify_otp"}
             state["step"] = "verify_otp"
         else:
             response = {"message": "Invalid email format. Please enter a valid email address."}
