@@ -111,19 +111,16 @@ def chat():
             state["step"] = "verify_otp"
         else:
             response = {"message": "Invalid email format. Please enter a valid email address."}
+            # Stay in the "ask_email" step to allow for re-entry.
     elif state["step"] == "verify_otp":
         if user_input == str(state.get("otp")):
             response = {"message": "Verified! Your ticket will be sent to you soon.", "end_conversation": True}
             conversation_state.pop(user_id, None)  # Clear the state after completion
         else:
             response = {"message": "Invalid OTP. Please try again."}
-
-    # Ensuring that if the server restarts and a user tries to send a message, they start from the beginning
-    if state["step"] == "ask_email" and user_input not in state:
-        state["step"] = "start" 
+            # Stay in the "verify_otp" step to allow for re-entry.
 
     return jsonify(response), 200
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
